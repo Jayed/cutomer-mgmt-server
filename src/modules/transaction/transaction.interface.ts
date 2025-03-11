@@ -8,6 +8,8 @@ export type ITransaction = {
   date?: Date; // date na dile ajker date
   details: string;
   customer: Types.ObjectId;
-  debit?: number; // default to zero
-  credit?: number; // default to zero
+  quantity_amount: number;
+  unitPrice_rmbRate: number;
+  expense?: number; // default to zero
+  deposit?: number; // default to zero
 };
