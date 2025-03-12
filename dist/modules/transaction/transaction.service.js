@@ -13,7 +13,7 @@ exports.TransactionServices = void 0;
 const transaction_model_1 = require("./transaction.model");
 // Find all Transactions
 const getAllTransactionsFromDB = () => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield transaction_model_1.TransactionModel.find().populate("customer"); // Populate customer details;
+    const result = yield transaction_model_1.TransactionModel.find().populate('customer'); // Populate customer details;
     // console.log('service:', result);
     return result;
 });
@@ -25,21 +25,21 @@ const getTransactionByIdFromDB = (id) => __awaiter(void 0, void 0, void 0, funct
     return Transaction;
 });
 // Create Transaction
+// Function to get the next transaction sequence number
+const getNextTransactionId = () => __awaiter(void 0, void 0, void 0, function* () {
+    const counter = yield transaction_model_1.TxCounterModel.findOneAndUpdate({ id: 'txCounter' }, { $inc: { sequence: 1 } }, { new: true, upsert: true });
+    return counter.sequence.toString().padStart(5, '0'); // Format as 5-digit (e.g., 00001)
+});
 const createTransactionIntoDB = (Transaction) => __awaiter(void 0, void 0, void 0, function* () {
+    // Get the next transaction ID
+    const transactionID = yield getNextTransactionId();
+    // Assign transaction ID
+    Transaction.transactionID = `TX-${transactionID}`;
     // console.log('Services:', Transaction);
+    // console.log(Transaction);
     const result = yield transaction_model_1.TransactionModel.create(Transaction);
     return result;
 });
-// const createTransactionIntoDB = async (transactionData: ITransaction) => {
-//   try {
-//     console.log("Service - Creating Transaction:", transactionData);
-//     const newTransaction = await TransactionModel.create(transactionData);
-//     return newTransaction;
-//   } catch (error) {
-//     console.error("Error creating transaction in DB:", error);
-//     throw new Error("Error creating transaction");
-//   }
-// };
 // Update a Transaction
 const updateTransactionByIdInDB = (TransactionId, updatedData) => __awaiter(void 0, void 0, void 0, function* () {
     const updatedTransaction = yield transaction_model_1.TransactionModel.findByIdAndUpdate(TransactionId, Object.assign({}, updatedData), { new: true, runValidators: true } // Return updated document and validate updates

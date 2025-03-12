@@ -11,8 +11,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CustomerServices = void 0;
 const customer_models_1 = require("./customer.models");
+// Function to get the next transaction sequence number
+const getNextCxId = () => __awaiter(void 0, void 0, void 0, function* () {
+    const counter = yield customer_models_1.CxCounterModel.findOneAndUpdate({ id: 'cxCounter' }, { $inc: { sequence: 1 } }, { new: true, upsert: true });
+    return counter.sequence.toString().padStart(2, '0'); // Format as 5-digit (e.g., 01)
+});
 // Create customer
 const createCustomerIntoDB = (Customer) => __awaiter(void 0, void 0, void 0, function* () {
+    // Get the next transaction ID
+    const customerId = yield getNextCxId();
+    // Assign Cx ID
+    Customer.customerId = `CX-${customerId}`;
     // console.log('Services:', Customer);
     const result = yield customer_models_1.CustomerModel.create(Customer);
     return result;
