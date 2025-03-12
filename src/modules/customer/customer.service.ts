@@ -1,8 +1,22 @@
 import { ICustomer } from './customer.interface';
-import { CustomerModel } from './customer.models';
+import { CustomerModel, CxCounterModel } from './customer.models';
+
+// Function to get the next transaction sequence number
+const getNextCxId = async () => {
+  const counter = await CxCounterModel.findOneAndUpdate(
+    { id: 'cxCounter' },
+    { $inc: { sequence: 1 } },
+    { new: true, upsert: true }
+  );
+  return counter.sequence.toString().padStart(2, '0'); // Format as 5-digit (e.g., 01)
+};
 
 // Create customer
 const createCustomerIntoDB = async (Customer: ICustomer) => {
+  // Get the next transaction ID
+  const customerId = await getNextCxId();
+  // Assign Cx ID
+  Customer.customerId = `CX-${customerId}`;
   // console.log('Services:', Customer);
   const result = await CustomerModel.create(Customer);
   return result;

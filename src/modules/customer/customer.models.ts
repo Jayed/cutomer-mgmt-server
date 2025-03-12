@@ -2,7 +2,7 @@
 // 3. Create a Model.
 
 import { Schema, model } from 'mongoose';
-import { ICustomer } from './customer.interface';
+import { ICustomer, ICxCounter } from './customer.interface';
 
 const CustomerSchema = new Schema<ICustomer>(
   {
@@ -16,10 +16,21 @@ const CustomerSchema = new Schema<ICustomer>(
       type: String,
       required: [true, 'Mobile number is required.'],
     },
+    email: {
+      type: String,
+      required: [true, 'Email number is required.'],
+    },
     address: { type: String, required: [true, 'Address is required.'] },
   },
   { timestamps: true }
 );
 
-// Export the Product model
+const CxCounterSchema = new Schema<ICxCounter>({
+  id: { type: String, required: true }, // Fixed "_id": "cxCounter"
+  sequence: { type: Number, required: true },
+});
+
+// Export the Customer models
 export const CustomerModel = model<ICustomer>('Customer', CustomerSchema);
+
+export const CxCounterModel = model<ICxCounter>('CxCounter', CxCounterSchema);

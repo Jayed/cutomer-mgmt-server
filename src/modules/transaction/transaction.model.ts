@@ -2,7 +2,7 @@
 // 3. Create a Model.
 
 import { Schema, model } from 'mongoose';
-import { ITransaction } from './transaction.interface';
+import { ITransaction, ITxCounter } from './transaction.interface';
 
 const TransactionSchema = new Schema<ITransaction>(
   {
@@ -28,7 +28,14 @@ const TransactionSchema = new Schema<ITransaction>(
   { timestamps: true }
 );
 
+const TxCounterSchema = new Schema<ITxCounter>({
+  id: { type: String, required: true}, // Fixed "_id": "productCounter"
+  sequence: { type: Number, required: true },
+});
+
 export const TransactionModel = model<ITransaction>(
   'Transaction',
   TransactionSchema
 );
+
+export const TxCounterModel = model<ITxCounter>('TxCounter', TxCounterSchema);

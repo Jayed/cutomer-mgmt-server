@@ -3,6 +3,7 @@
 // import { Types } from 'mongoose';
 import { Types } from 'mongoose';
 
+//Transaction schema
 export type ITransaction = {
   transactionID: string;
   date?: Date; // date na dile ajker date
@@ -12,4 +13,10 @@ export type ITransaction = {
   unitPrice_rmbRate: number;
   expense?: number; // default to zero
   deposit?: number; // default to zero
+};
+
+// transaction counter schema
+export type ITxCounter = {
+  id: string; // Fixed "_id": "productCounter"
+  sequence: number;
 };

@@ -1,9 +1,9 @@
 import { ITransaction } from './transaction.interface';
-import { TransactionModel } from './transaction.model';
+import { TransactionModel, TxCounterModel } from './transaction.model';
 
 // Find all Transactions
 const getAllTransactionsFromDB = async () => {
-  const result = await TransactionModel.find().populate("customer"); // Populate customer details;
+  const result = await TransactionModel.find().populate('customer'); // Populate customer details;
   // console.log('service:', result);
   return result;
 };
@@ -16,21 +16,27 @@ const getTransactionByIdFromDB = async (id: string) => {
   return Transaction;
 };
 // Create Transaction
+// Function to get the next transaction sequence number
+const getNextTransactionId = async () => {
+  const counter = await TxCounterModel.findOneAndUpdate(
+    { id: 'txCounter' },
+    { $inc: { sequence: 1 } },
+    { new: true, upsert: true }
+  );
+
+  return counter.sequence.toString().padStart(5, '0'); // Format as 5-digit (e.g., 00001)
+};
 const createTransactionIntoDB = async (Transaction: ITransaction) => {
+  // Get the next transaction ID
+  const transactionID = await getNextTransactionId();
+
+  // Assign transaction ID
+  Transaction.transactionID = `TX-${transactionID}`;
   // console.log('Services:', Transaction);
+  // console.log(Transaction);
   const result = await TransactionModel.create(Transaction);
   return result;
 };
-// const createTransactionIntoDB = async (transactionData: ITransaction) => {
-//   try {
-//     console.log("Service - Creating Transaction:", transactionData);
-//     const newTransaction = await TransactionModel.create(transactionData);
-//     return newTransaction;
-//   } catch (error) {
-//     console.error("Error creating transaction in DB:", error);
-//     throw new Error("Error creating transaction");
-//   }
-// };
 
 // Update a Transaction
 const updateTransactionByIdInDB = async (
