@@ -13,6 +13,7 @@ const TransactionSchema = new mongoose_1.Schema({
         ref: 'Customer',
         required: [true, 'Customer is required.'],
     },
+    transactionType: { type: String, required: [true, 'Transaction type is required.'] },
     quantity_amount: {
         type: Number,
         required: [true, 'Quantity or Amount is required.'],
