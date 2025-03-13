@@ -9,6 +9,7 @@ export type ITransaction = {
   date?: Date; // date na dile ajker date
   details: string;
   customer: Types.ObjectId;
+  transactionType: string;
   quantity_amount: number;
   unitPrice_rmbRate: number;
   expense?: number; // default to zero
